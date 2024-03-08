@@ -1,0 +1,94 @@
+/*
+The MIT License (MIT)
+
+Copyright (c) 2017 Leonardo Laguna Ruiz
+-----
+Collection of small useful functions
+*/
+
+fun edge(x:bool) : bool {
+   mem pre;
+   val ret = x && not(pre);
+   pre = x;
+   return ret;
+}
+
+fun change(x:real):bool {
+    mem pre_x;
+    val v:bool = pre_x <> x;
+    pre_x = x;
+    return v;
+}
+
+fun map(x:real,x0,x1,y0,y1) : real {
+  return (x-x0)*(y1-y0)/(x1-x0) + y0;
+}
+
+fun dcblock(x0){
+  mem x1,y1;
+  val y0 = x0-x1+y1*0.995;
+  x1,y1 = x0,y0;
+  return y0;
+}
+
+fun smooth(input){
+   mem x;
+   x = x+(input-x)*0.005;
+   return x;
+}
+
+fun average2(x1:real) : real {
+   mem x0;
+   val result = (x0 + x1) / 2.0;
+   x0 = x1;
+   return result;
+}
+
+fun cubic_clipper(x) {
+   if(x <= -2.0/3.0)
+      return -2.0/3.0;
+   else if(x >= 2.0/3.0)
+      return 2.0/3.0;
+   else
+      return x - (x * x * x) / 3.0;
+}
+
+/* Rate to get a 2^10 ramp */
+fun pitchToRate_1024(pitch) @[table(size=32,min=0.0,max=127.0)] {
+   // 2^10 /44100 440 2^((pitch - 69)/12.)
+   return 0.18984168003671556 * exp(0.057762265046662105 * pitch);
+}
+
+fun pitchToRate(pitch) @[table(size=32, min=0.0, max=127.0)] {
+   // 1.0 /44100 440 2^((pitch - 69)/12.)
+   return 0.00018539226566085504 * exp(0.057762265046662105 * pitch);
+}
+
+fun cvToPitch(cv) {
+   return cv * 120.0 + 24.0;
+}
+
+fun cvToRate_1024(cv) @[table(size=32,min=0.0,max=0.9)] {
+   return pitchToRate_1024(cvToPitch(cv));
+}
+
+fun cvToRate(cv) @[table(size=128, min=0.0, max=0.9)] {
+   return pitchToRate(cvToPitch(cv));
+}
+
+fun pitchToCv(pitch) {
+   return 1.0/120.0 * (-24.0 + pitch);
+}
+
+fun cvToperiod(cv) @[table(size=32,min=0.0,max=1.0)] {
+   val pitch = Util.cvToPitch(cv);
+   val f = 8.175798915643707 * exp(0.057762265046662105 * pitch); //440. 2^((pitch - 69)/12.)
+   return 44100.0 / f / 2.0;
+}
+
+/* Returns the frequency in kHz of the corresponding CV */
+fun cvTokHz(cv) @[table(size=32,min=0.0,max=1.0)] {
+   val pitch = Util.cvToPitch(cv);
+   val f = 8.175798915643707 * exp(0.057762265046662105 * pitch); //440. 2^((pitch - 69)/12.)
+   return f/1000.0;
+}

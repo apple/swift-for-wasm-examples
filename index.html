@@ -1,0 +1,33 @@
+<!-- This source file is part of the Swift open source project
+
+Copyright (c) 2024 Apple Inc. and the Swift project authors
+Licensed under Apache License v2.0 with Runtime Library Exception
+
+See https://swift.org/LICENSE.txt for license information
+See https://swift.org/CONTRIBUTORS.txt for the list of Swift project authors -->
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Swift Audio Workstation</title>
+  </head>
+  <body>
+    <script type="module" src="Sources/JavaScript/index.js">
+    </script>
+    <style>
+    body {
+      background-color: black;
+      padding: 1rem;
+    }
+    #wasm-logger {
+      font-family: sans-serif;
+      color: white;
+    }
+    </style>
+  </body>
+  <h1 id="wasm-logger">Swift Audio Workstation</h1>
+  <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 1rem;">
+  <canvas id="tutorial" width="1000" height="210"></canvas>
+  <audio id="audio" type="audio.wav" controls></audio>
+  </div>
+</html>

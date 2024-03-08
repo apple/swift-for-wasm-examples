@@ -1,0 +1,21 @@
+/*
+The MIT License (MIT)
+
+Copyright (c) 2017 Leonardo Laguna Ruiz
+-----
+Sin oscillator reset control
+*/
+
+fun process(cv, reset) {
+   mem trig;
+   if(Util.edge(reset > 0.5)) {
+      trig = true;
+   }
+   val phase = p:Phase.process(cv, 0.0);
+   // the frequency changes only during the zero crossings
+   if(phase < eps() && trig) {
+      trig = false;
+      _ = p:Phase.process(cv, 0.0);
+   }
+   return Tables.nsine(phase);
+}

@@ -26,6 +26,17 @@ let linkerSettings: [LinkerSetting] = [
     ] + wasmLDSettings)
 ]
 
+let libcSettings: [CSetting] = [
+    .define("LACKS_TIME_H"),
+    .define("LACKS_SYS_TYPES_H"),
+    .define("LACKS_STDLIB_H"),
+    .define("LACKS_STRING_H"),
+    .define("LACKS_SYS_MMAN_H"),
+    .define("LACKS_FCNTL_H"),
+    .define("NO_MALLOC_STATS", to: "1"),
+    .define("__wasilibc_unmodified_upstream"),
+]
+
 let package = Package(
     name: "swift-for-wasm-example",
     platforms: [.macOS(.v14)],
@@ -42,16 +53,7 @@ let package = Package(
         .target(name: "VultDSP"),
         .target(
             name: "dlmalloc",
-            cSettings: [
-                .define("LACKS_TIME_H"),
-                .define("LACKS_SYS_TYPES_H"),
-                .define("LACKS_STDLIB_H"),
-                .define("LACKS_STRING_H"),
-                .define("LACKS_SYS_MMAN_H"),
-                .define("LACKS_FCNTL_H"),
-                .define("NO_MALLOC_STATS", to: "1"),
-                .define("__wasilibc_unmodified_upstream"),
-            ]
+            cSettings: libcSettings
         ),
     ]
 )

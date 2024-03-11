@@ -3,6 +3,29 @@
 
 import PackageDescription
 
+#if os(macOS)
+let wasmLDSettings: [String] = ["-use-ld=/opt/homebrew/opt/llvm/bin/wasm-ld"]
+#else
+let wasmLDSettings: [String] = []
+#endif
+
+let embeddedSwiftSettings: [SwiftSetting] = [
+    .enableExperimentalFeature("Embedded"), 
+    .interoperabilityMode(.Cxx),
+    .unsafeFlags(["-wmo", "-disable-cmo", "-Xfrontend", "-gnone"])
+]
+
+let embeddedCSettings: [CSetting] = [
+    .unsafeFlags(["-fdeclspec"])
+]
+
+let linkerSettings: [LinkerSetting] = [
+    .unsafeFlags([
+        "-Xclang-linker", "-nostdlib",
+        "-Xlinker", "--no-entry"
+    ] + wasmLDSettings)
+]
+
 let package = Package(
     name: "swift-for-wasm-example",
     platforms: [.macOS(.v14)],
@@ -11,20 +34,10 @@ let package = Package(
         // Targets can depend on other targets in this package and products from dependencies.
         .executableTarget(
             name: "swift-audio",
-            dependencies: ["dlmalloc", "VultDSP"],
-            cSettings: [.unsafeFlags(["-fdeclspec"])],
-            swiftSettings: [
-                .enableExperimentalFeature("Embedded"), 
-                .interoperabilityMode(.Cxx),
-                .unsafeFlags(["-wmo", "-disable-cmo", "-Xfrontend", "-gnone"])
-            ],
-            linkerSettings: [
-                .unsafeFlags([
-                    "-use-ld=/opt/homebrew/opt/llvm/bin/wasm-ld",
-                    "-Xclang-linker", "-nostdlib",
-                    "-Xlinker", "--no-entry"
-                ])
-            ]
+            dependencies: ["VultDSP", "dlmalloc"],
+            cSettings: embeddedCSettings,
+            swiftSettings: embeddedSwiftSettings,
+            linkerSettings: linkerSettings
         ),
         .target(name: "VultDSP"),
         .target(

@@ -78,7 +78,7 @@ struct WasmEdge {
       print(String(decoding: buffer, as: UTF8.self))
 
       var response = "HTTP/1.1 204 No Content\r\n"
-      let bytesWritten = response.withUTF8 {
+      _ = response.withUTF8 {
         write(connection, $0.baseAddress, $0.count)
       }
 

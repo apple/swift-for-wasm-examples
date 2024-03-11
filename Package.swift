@@ -49,6 +49,9 @@ let package = Package(
             swiftSettings: embeddedSwiftSettings,
             linkerSettings: linkerSettings
         ),
+        .executableTarget(
+            name: "wasmedge-server"
+        ),
         .target(name: "VultDSP"),
         .target(
             name: "dlmalloc",

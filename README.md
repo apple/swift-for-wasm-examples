@@ -49,7 +49,7 @@ swift build --triple wasm32-unknown-none-wasm -c release --product swift-audio
 
 Start an HTTP server in the cloned directory of the package:
 
-```
+```sh
 python3 -m http.server
 ```
 

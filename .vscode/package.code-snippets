@@ -355,6 +355,7 @@
             "  let totalLengthInSeconds = 6",
             "  let buffer = AudioBuffer(capacity: sampleRate * totalLengthInSeconds)",
             "  buffer.fill(source: &saw)",
+            "  Audio.encode(buffer)",
             "",
             "  Plotter<HTMLCanvas>(",
             "    width: 1000, height: 200, margin: 10",

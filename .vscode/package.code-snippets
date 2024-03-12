@@ -605,7 +605,9 @@
             "    var volume3: Float = 1.0",
             "",
             "    mutating func next() -> Float {",
-            "        self.source1.next() * volume1 + self.source2.next() * volume2 + self.source3.next() * volume3",
+            "        self.source1.next() * volume1 +",
+            "            self.source2.next() * volume2 +",
+            "            self.source3.next() * volume3",
             "    }",
             "}",
         ]

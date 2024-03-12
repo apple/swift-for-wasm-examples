@@ -64,7 +64,7 @@ See [https://swift.org/CONTRIBUTORS.txt](https://swift.org/CONTRIBUTORS.txt) for
 
 See [`LICENSE-vendored.md`](https://github.com/apple/swift-for-wasm-examples/blob/main/LICENSE-vendored.md) for exact licenses of code vendored in this repository. Specifically:
 
-1. Code in `Sources/dlmalloc` directory is derived from wasi-libc: https://github.com/WebAssembly/wasi-libc
+* Code in `Sources/dlmalloc` directory is derived from wasi-libc: https://github.com/WebAssembly/wasi-libc
 
 > wasi-libc as a whole is multi-licensed under the Apache License v2.0 with LLVM Exceptions, the Apache License v2.0, and the MIT License. See the LICENSE-APACHE-LLVM, LICENSE-APACHE and LICENSE-MIT files, respectively, for details.
 >
@@ -74,13 +74,13 @@ See [`LICENSE-vendored.md`](https://github.com/apple/swift-for-wasm-examples/blo
 >
 > wasi-libc's changes to these files are multi-licensed under the Apache License v2.0 with LLVM Exceptions, the Apache License v2.0, the MIT License, and the original licenses of the third-party works.
 
-2. .wav format encoding implementation is derived from WavAudioEncoder.js library https://github.com/higuma/wav-audio-encoder-js and is licensed as following:
+* .wav format encoding implementation is derived from WavAudioEncoder.js library https://github.com/higuma/wav-audio-encoder-js and is licensed as following:
 
 > The MIT License (MIT)
 > 
 > Copyright (c) 2015 Yuji Miyane
 
-3. Code in `Sources/VultDSP` directory is derived from https://github.com/vult-dsp/vult and is licensed as following:
+* Code in `Sources/VultDSP` directory is derived from https://github.com/vult-dsp/vult and is licensed as following:
 
 > MIT License
 > 

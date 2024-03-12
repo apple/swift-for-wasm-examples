@@ -8,8 +8,8 @@ WebAssembly support in Swift is available for preview in latest Trunk Developmen
 
 ### macOS
 
-1. Make sure you have Xcode installed.
-2. Verify selected Xcode path by running `xcode-select -p` in the terminal. If that's not the case, follow the steps provided in ["How do I select the default version of Xcode"](https://developer.apple.com/library/archive/technotes/tn2339/_index.html#//apple_ref/doc/uid/DTS40014588-CH1-HOW_DO_I_SELECT_THE_DEFAULT_VERSION_OF_XCODE_TO_USE_FOR_MY_COMMAND_LINE_TOOLS_) section of ["Building from the Command Line with Xcode FAQ"](https://developer.apple.com/library/archive/technotes/tn2339/_index.html).
+1. Install [Xcode](https://apps.apple.com/us/app/xcode/id497799835?mt=12).
+2. Verify selected Xcode path by running `xcode-select -p` in the terminal. If the incorrect Xcode is selected, follow the steps provided in ["How do I select the default version of Xcode"](https://developer.apple.com/library/archive/technotes/tn2339/_index.html#//apple_ref/doc/uid/DTS40014588-CH1-HOW_DO_I_SELECT_THE_DEFAULT_VERSION_OF_XCODE_TO_USE_FOR_MY_COMMAND_LINE_TOOLS_) section of ["Building from the Command Line with Xcode FAQ"](https://developer.apple.com/library/archive/technotes/tn2339/_index.html).
 3. Download latest development snapshot, for example [`DEVELOPMENT-SNAPSHOT-2024-03-07-a`](https://download.swift.org/development/xcode/swift-DEVELOPMENT-SNAPSHOT-2024-03-07-a/swift-DEVELOPMENT-SNAPSHOT-2024-03-07-a-osx.pkg) or later.
 4. Run the downloaded installer. Select "Install for me only" option during installation.
 5. Select the newly installed snapshot in terminal:
@@ -25,13 +25,12 @@ brew install llvm
 
 ### Docker
 
-1. Run this command in a clone of this repository:
+1. Start a docker container in a clone of this repository using the nightly swiftlang Ubuntu image, with a `/root/build` mount to the current directory:
 
 ```sh
 docker run --rm -it -v $(pwd):/root/build swiftlang/swift:nightly-jammy /bin/bash
 ```
 
-This will mount the clone directory as a volume in the Docker container and also make final build products available to your host system.
 
 2. Navigate to the package directory within the container:
 
@@ -41,13 +40,13 @@ cd /root/build
 
 ## How to Build and Run
 
-Assuming you have the latest development snapshots selected per the instructions above, build the package with this command:
+Assuming you're within the cloned repository and have the latest development snapshots selected per the instructions above, first build the package:
 
 ```sh
 swift build --triple wasm32-unknown-none-wasm -c release --product swift-audio
 ```
 
-Start an HTTP server in the cloned directory of the package:
+Then start the HTTP server:
 
 ```sh
 python3 -m http.server

@@ -12,10 +12,16 @@
 
 import VultDSP
 
+/// Stateful triangle-shaped waveform.
 struct Triangle: Signal {
+    /// The pitch parameter of the waveform that sets its tone.
     var pitch: Pitch
+
+    /// The "volume" of the signal, i.e. the absolute boundary of the range in which this signal oscillates. Default
+    /// amplitude of 1.0 means that samples returned from ``Triangle/next()`` will always stay in `-1.0...1.0` range.
     var amplitude: Float = 1.0
 
+    /// The state managed by the underlying VultDSP implementation of the signal.
     var state = Triangle__ctx_type_0()
 
     mutating func next() -> Float {

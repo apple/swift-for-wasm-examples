@@ -18,13 +18,13 @@ WebAssembly support in Swift is available for preview in latest Trunk Developmen
 
 1. Install [Xcode](https://apps.apple.com/us/app/xcode/id497799835?mt=12).
 2. Verify selected Xcode path by running `xcode-select -p` in the terminal. If the incorrect Xcode is selected, follow
-3. the steps provided in ["How do I select the default version of Xcode"](https://developer.apple.com/library/archive/technotes/tn2339/_index.html#//apple_ref/doc/uid/DTS40014588-CH1-HOW_DO_I_SELECT_THE_DEFAULT_VERSION_OF_XCODE_TO_USE_FOR_MY_COMMAND_LINE_TOOLS_) section of
-4. ["Building from the Command Line with Xcode FAQ"](https://developer.apple.com/library/archive/technotes/tn2339/_index.html).
-5. Download latest development snapshot, for example
-6. [`DEVELOPMENT-SNAPSHOT-2024-03-07-a`](https://download.swift.org/development/xcode/swift-DEVELOPMENT-SNAPSHOT-2024-03-07-a/swift-DEVELOPMENT-SNAPSHOT-2024-03-07-a-osx.pkg)
-7. or later.
-8. Run the downloaded installer. Select "Install for me only" option during installation.
-9. Select the newly installed snapshot in terminal:
+the steps provided in ["How do I select the default version of Xcode"](https://developer.apple.com/library/archive/technotes/tn2339/_index.html#//apple_ref/doc/uid/DTS40014588-CH1-HOW_DO_I_SELECT_THE_DEFAULT_VERSION_OF_XCODE_TO_USE_FOR_MY_COMMAND_LINE_TOOLS_) section of
+["Building from the Command Line with Xcode FAQ"](https://developer.apple.com/library/archive/technotes/tn2339/_index.html).
+3. Download latest development snapshot, for example
+[`DEVELOPMENT-SNAPSHOT-2024-03-07-a`](https://download.swift.org/development/xcode/swift-DEVELOPMENT-SNAPSHOT-2024-03-07-a/swift-DEVELOPMENT-SNAPSHOT-2024-03-07-a-osx.pkg)
+or later.
+4. Run the downloaded installer. Select "Install for me only" option during installation.
+5. Select the newly installed snapshot in terminal:
 
 ```sh
 export TOOLCHAINS=$(plutil -extract CFBundleIdentifier raw \

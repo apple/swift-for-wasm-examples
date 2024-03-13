@@ -48,8 +48,10 @@ func main() {
     )
 
     let totalLengthInSeconds = 6
-    let buffer = AudioBuffer(capacity: sampleRate * totalLengthInSeconds)
-    buffer.fill(source: &mixer)
+    let buffer = AudioBuffer(
+        capacity: sampleRate * totalLengthInSeconds,
+        source: &mixer
+    )
     Audio.encode(buffer)
 
     Plotter<HTMLCanvas>(

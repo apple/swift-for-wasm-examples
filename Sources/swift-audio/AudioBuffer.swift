@@ -10,14 +10,15 @@
 //
 //===----------------------------------------------------------------------===//
 
+/// A non-copyable buffer of audio samples.
 struct AudioBuffer: ~Copyable {
     let storage: UnsafeMutableBufferPointer<Float>
 
-    init(capacity: Int) {
+    /// Allocates an audio buffer and fills it with samples from a given signal.
+    /// - Parameter capacity: the number of samples
+    init(capacity: Int, source: inout some Signal) {
         self.storage = .allocate(capacity: capacity)
-    }
 
-    func fill(source: inout some Signal) {
         for i in self.storage.indices {
             let sample = source.next()
             self.storage[i] = sample

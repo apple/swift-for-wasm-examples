@@ -2,17 +2,29 @@
 
 A repository with a "Swift Audio Workstation" example built with Swift for WebAssembly running in the browser.
 
+This example demonstrates support for WebAssembly in latest development snapshots of the Swift toolchain, in combination
+with the [Embedded Swift mode](https://github.com/apple/swift/blob/main/docs/EmbeddedSwift/UserManual.md).
+With foundational building blocks written in Swift, it utilizes C++ interop for calling into a
+[DSP](https://en.wikipedia.org/wiki/Digital_signal_processing) library for synthesizing simple musical sequences. It is
+written with a multi-platform approach, which makes it easy to integrate into Wasm-based serverless environment or
+native applications and libraries.
+
 ## Requirements
 
-WebAssembly support in Swift is available for preview in latest Trunk Development (main) snapshots at [swift.org/download](https://www.swift.org/download).
+WebAssembly support in Swift is available for preview in latest Trunk Development (main) snapshots at
+[swift.org/download](https://www.swift.org/download).
 
 ### macOS
 
 1. Install [Xcode](https://apps.apple.com/us/app/xcode/id497799835?mt=12).
-2. Verify selected Xcode path by running `xcode-select -p` in the terminal. If the incorrect Xcode is selected, follow the steps provided in ["How do I select the default version of Xcode"](https://developer.apple.com/library/archive/technotes/tn2339/_index.html#//apple_ref/doc/uid/DTS40014588-CH1-HOW_DO_I_SELECT_THE_DEFAULT_VERSION_OF_XCODE_TO_USE_FOR_MY_COMMAND_LINE_TOOLS_) section of ["Building from the Command Line with Xcode FAQ"](https://developer.apple.com/library/archive/technotes/tn2339/_index.html).
-3. Download latest development snapshot, for example [`DEVELOPMENT-SNAPSHOT-2024-03-07-a`](https://download.swift.org/development/xcode/swift-DEVELOPMENT-SNAPSHOT-2024-03-07-a/swift-DEVELOPMENT-SNAPSHOT-2024-03-07-a-osx.pkg) or later.
-4. Run the downloaded installer. Select "Install for me only" option during installation.
-5. Select the newly installed snapshot in terminal:
+2. Verify selected Xcode path by running `xcode-select -p` in the terminal. If the incorrect Xcode is selected, follow
+3. the steps provided in ["How do I select the default version of Xcode"](https://developer.apple.com/library/archive/technotes/tn2339/_index.html#//apple_ref/doc/uid/DTS40014588-CH1-HOW_DO_I_SELECT_THE_DEFAULT_VERSION_OF_XCODE_TO_USE_FOR_MY_COMMAND_LINE_TOOLS_) section of
+4. ["Building from the Command Line with Xcode FAQ"](https://developer.apple.com/library/archive/technotes/tn2339/_index.html).
+5. Download latest development snapshot, for example
+6. [`DEVELOPMENT-SNAPSHOT-2024-03-07-a`](https://download.swift.org/development/xcode/swift-DEVELOPMENT-SNAPSHOT-2024-03-07-a/swift-DEVELOPMENT-SNAPSHOT-2024-03-07-a-osx.pkg)
+7. or later.
+8. Run the downloaded installer. Select "Install for me only" option during installation.
+9. Select the newly installed snapshot in terminal:
 
 ```sh
 export TOOLCHAINS=$(plutil -extract CFBundleIdentifier raw \
@@ -23,9 +35,15 @@ export TOOLCHAINS=$(plutil -extract CFBundleIdentifier raw \
 brew install llvm
 ```
 
+### Linux
+
+Follow Linux-specific instructions provided on [swift.org/install](https://www.swift.org/install/#linux) to install the
+latest development toolchain for your specific distribution.
+
 ### Docker
 
-1. Start a docker container in a clone of this repository using the nightly swiftlang Ubuntu image, with a `/root/build` mount to the current directory:
+1. Start a docker container in a clone of this repository using the nightly swiftlang Ubuntu image, with a `/root/build`
+2. mount to the current directory:
 
 ```sh
 docker run --rm -it -v $(pwd):/root/build swiftlang/swift:nightly-jammy /bin/bash
@@ -40,7 +58,8 @@ cd /root/build
 
 ## How to Build and Run
 
-Assuming you're within the cloned repository and have the latest development snapshots selected per the instructions above, first build the package:
+Assuming you're within the cloned repository and have the latest development snapshots selected per the instructions
+above, first build the package:
 
 ```sh
 swift build --triple wasm32-unknown-none-wasm -c release --product swift-audio

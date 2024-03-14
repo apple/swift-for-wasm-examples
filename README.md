@@ -43,12 +43,11 @@ latest development toolchain for your specific distribution.
 ### Docker
 
 1. Start a docker container in a clone of this repository using the nightly swiftlang Ubuntu image, with a `/root/build`
-2. mount to the current directory:
+mount to the current directory:
 
 ```sh
 docker run --rm -it -v $(pwd):/root/build swiftlang/swift:nightly-jammy /bin/bash
 ```
-
 
 2. Navigate to the package directory within the container:
 

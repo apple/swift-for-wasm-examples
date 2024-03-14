@@ -10,6 +10,9 @@
 //
 //===----------------------------------------------------------------------===//
 
+/// Abstract implementation of line drawing on a canvas. Platform-specific
+/// implementation is required to provide these functions for drawing code in
+/// this module to work.
 protocol Canvas {
     static func beginPath()
     static func stroke()

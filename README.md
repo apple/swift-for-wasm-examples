@@ -20,19 +20,13 @@ WebAssembly support in Swift is available for preview in latest Trunk Developmen
 2. Verify selected Xcode path by running `xcode-select -p` in the terminal. If the incorrect Xcode is selected, follow
 the steps provided in ["How do I select the default version of Xcode"](https://developer.apple.com/library/archive/technotes/tn2339/_index.html#//apple_ref/doc/uid/DTS40014588-CH1-HOW_DO_I_SELECT_THE_DEFAULT_VERSION_OF_XCODE_TO_USE_FOR_MY_COMMAND_LINE_TOOLS_) section of
 ["Building from the Command Line with Xcode FAQ"](https://developer.apple.com/library/archive/technotes/tn2339/_index.html).
-3. Download latest development snapshot, for example
-[`DEVELOPMENT-SNAPSHOT-2024-03-07-a`](https://download.swift.org/development/xcode/swift-DEVELOPMENT-SNAPSHOT-2024-03-07-a/swift-DEVELOPMENT-SNAPSHOT-2024-03-07-a-osx.pkg)
-or later.
+3. Download latest development snapshot, you can use [`DEVELOPMENT-SNAPSHOT-2024-04-01-a`](https://download.swift.org/development/xcode/swift-DEVELOPMENT-SNAPSHOT-2024-04-01-a/swift-DEVELOPMENT-SNAPSHOT-2024-04-01-a-osx.pkg) or a later version.
 4. Run the downloaded installer. Select "Install for me only" option during installation.
 5. Select the newly installed snapshot in terminal:
 
 ```sh
 export TOOLCHAINS=$(plutil -extract CFBundleIdentifier raw \
   ~/Library/Developer/Toolchains/swift-latest.xctoolchain/Info.plist)
-```
-6. Install `wasm-ld` linker with [Homebrew](https://brew.sh/):
-```sh
-brew install llvm
 ```
 
 ### Linux

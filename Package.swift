@@ -3,12 +3,6 @@
 
 import PackageDescription
 
-#if os(macOS)
-let wasmLDSettings: [String] = ["-use-ld=/opt/homebrew/opt/llvm/bin/wasm-ld"]
-#else
-let wasmLDSettings: [String] = []
-#endif
-
 let embeddedSwiftSettings: [SwiftSetting] = [
     .enableExperimentalFeature("Embedded"), 
     .interoperabilityMode(.Cxx),
@@ -23,7 +17,7 @@ let linkerSettings: [LinkerSetting] = [
     .unsafeFlags([
         "-Xclang-linker", "-nostdlib",
         "-Xlinker", "--no-entry"
-    ] + wasmLDSettings)
+    ])
 ]
 
 let libcSettings: [CSetting] = [

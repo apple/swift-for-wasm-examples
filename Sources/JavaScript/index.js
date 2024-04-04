@@ -52,8 +52,8 @@ const importsObject = {
     log: (address, byteCount) => {
       loggerElement.innerHTML = wasmMemoryAsString(address, byteCount);
     },
-    logInt: (int) => console.log(int),
-    logFloat: (int) => console.log(int),
+    logInt: (x) => console.log(x),
+    logFloat: (x) => console.log(x),
   }
 };
 

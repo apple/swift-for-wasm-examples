@@ -1,0 +1,5 @@
+{
+    "swiftPM": {
+        "triple": "wasm32-unknown-none-wasm"
+    }
+}

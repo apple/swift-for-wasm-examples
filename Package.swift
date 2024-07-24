@@ -5,6 +5,7 @@ import PackageDescription
 
 let embeddedSwiftSettings: [SwiftSetting] = [
     .enableExperimentalFeature("Embedded"), 
+    .enableExperimentalFeature("Extern"),
     .interoperabilityMode(.Cxx),
     .unsafeFlags(["-wmo", "-disable-cmo", "-Xfrontend", "-gnone"])
 ]

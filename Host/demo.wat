@@ -1,6 +1,6 @@
 (module
   (import "host" "print"
-    (func $print (param (; pointer ;) i32 (; offset ;) i32)))
+    (func $print (param (; pointer ;) i32 (; length ;) i32)))
   (export "main" (func $main))
 
   (memory 1)

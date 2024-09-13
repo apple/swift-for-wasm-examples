@@ -7,12 +7,8 @@
 
   (func $factorial (param $arg i64) (result i64)
     (if (result i64)
-      (i64.eqz
-        (local.get $arg)
-      )
-      (then
-        (i64.const 1)
-      )
+      (i64.eqz (local.get $arg))
+      (then (i64.const 1))
       (else
         (i64.mul
           (local.get $arg)

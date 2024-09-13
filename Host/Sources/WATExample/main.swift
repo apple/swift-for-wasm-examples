@@ -6,7 +6,7 @@ let watURL = URL(fileURLWithPath: #filePath)
     .deletingLastPathComponent()
     .deletingLastPathComponent()
     .deletingLastPathComponent()
-    .appendingPathComponent("demo-flat.wat")
+    .appendingPathComponent("demo.wat")
 
 let binaryModule = try wat2wasm(String(decoding: Data(contentsOf: watURL), as: UTF8.self))
 
@@ -22,15 +22,15 @@ let runtime = Runtime(
                     else { return [] }
 
                     let string = String(
-                        decoding: instance.store.memory(at: 0).data[Int(start)..<Int(start + offset)],
+                        decoding: instance.store.memory(at: 0).data[Int(start) ..< Int(start + offset)],
                         as: UTF8.self
                     )
 
                     print("Guest module printed: \(string)")
                     return []
-                }
+                },
             ]
-        )
+        ),
     ]
 )
 let moduleInstance = try runtime.instantiate(module: parsedModule)

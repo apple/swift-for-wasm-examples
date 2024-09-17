@@ -5,10 +5,13 @@ import PackageDescription
 
 let package = Package(
     name: "WasmHost",
-    platforms: [.macOS(.v10_15)],
+    platforms: [.macOS(.v14)],
     dependencies: [
+        .package(url: "https://github.com/apple/swift-nio.git", from: "2.72.0"),
+        .package(url: "https://github.com/apple/swift-system.git", from: "1.3.2"),
         .package(url: "https://github.com/swiftwasm/WasmKit.git", from: "0.0.8"),
-        .package(url: "https://github.com/vapor/vapor.git", from: "4.99.3"),
+        .package(url: "https://github.com/hummingbird-project/hummingbird.git", from: "2.0.0"),
+        .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.3.0")
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -20,17 +23,22 @@ let package = Package(
                 .product(name: "WasmKit", package: "WasmKit"),
             ]
         ),
+
         .executableTarget(
-            name: "App",
+            name: "Server",
             dependencies: [
-                .product(name: "Vapor", package: "vapor"),
+                .product(name: "_NIOFileSystem", package: "swift-nio"),
+                .product(name: "SystemPackage", package: "swift-system"),
+                .product(name: "ArgumentParser", package: "swift-argument-parser"),
+                .product(name: "Hummingbird", package: "hummingbird"),
+                .product(name: "WasmKit", package: "WasmKit"),
             ]
         ),
-        .testTarget(
-            name: "AppTests",
+
+        .testTarget(name: "ServerTests",
             dependencies: [
-                .target(name: "App"),
-                .product(name: "XCTVapor", package: "vapor"),
+                .byName(name: "Server"),
+                .product(name: "HummingbirdTesting", package: "hummingbird")
             ]
         )
     ]

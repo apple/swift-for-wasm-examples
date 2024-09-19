@@ -40,44 +40,57 @@ private func serveFile(path: FilePath) async throws -> Response {
     })
 }
 
+private func serveHTML(_ string: String) -> Response {
+    .init(
+        status: .ok,
+        headers: .init(dictionaryLiteral: (.contentType, "text/html")),
+        body: .init(byteBuffer: .init(string: string))
+    )
+}
+
+enum UploadError: Error {
+    case invalidFileName
+}
+
 /// Build router
 func buildRouter() -> Router<AppRequestContext> {
-    let router = Router(context: AppRequestContext.self)
-    // Add middleware
-    router.addMiddleware {
-        // logging middleware
-        LogRequestsMiddleware(.info)
-    }
-
-    router.get("/") { _, _ in
-        Response(
-            status: .temporaryRedirect,
-            headers: [.location: "/public/index.html"]
-        )
-    }
-
-    router.get("/public/**") { request, context in
-        // return catchAll captured string
-        let path = context.parameters.getCatchAll().joined(separator: "/")
-
-        return try await serveFile(path: storagePath.appending(path))
-    }
-
-    router.post("/wasm-module/:name") { req, ctx -> HTTPResponse.Status in
-        try await FileSystem.shared.withFileHandle(
-            forWritingAt: storagePath.appending(ctx.parameters.get("name")!),
-            options: .newFile(replaceExisting: true)
-        ) {
-            var offset: Int64 = 0
-            for try await buffer in req.body {
-                let count = buffer.readableBytes
-                try await $0.write(contentsOf: buffer, toAbsoluteOffset: offset)
-                offset += Int64(count)
-            }
+    Router(context: AppRequestContext.self)
+        // Add middleware
+        .addMiddleware {
+            // logging middleware
+            LogRequestsMiddleware(.info)
         }
 
-        return .ok
-    }
+        .get("/") { _, _ in
+            Response(
+                status: .temporaryRedirect,
+                headers: [.location: "/public/index.html"]
+            )
+        }
 
-    return router
+        .get("/public/**") { req, ctx in
+            // return catchAll captured string
+            let path = ctx.parameters.getCatchAll().joined(separator: "/")
+
+            return try await serveFile(path: storagePath.appending(path))
+        }
+
+        .post("/wasm-module/:name") { req, ctx in
+            guard let fileName = ctx.parameters.get("name")
+            else { throw UploadError.invalidFileName }
+
+            try await FileSystem.shared.withFileHandle(
+                forWritingAt: storagePath.appending(fileName),
+                options: .newFile(replaceExisting: true)
+            ) {
+                var offset: Int64 = 0
+                for try await buffer in req.body {
+                    let count = buffer.readableBytes
+                    try await $0.write(contentsOf: buffer, toAbsoluteOffset: offset)
+                    offset += Int64(count)
+                }
+            }
+
+            return HTTPResponse.Status.ok
+        }
 }

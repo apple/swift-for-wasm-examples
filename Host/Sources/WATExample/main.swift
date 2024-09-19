@@ -22,7 +22,9 @@ let runtime = Runtime(
                     else { return [] }
 
                     let string = String(
-                        decoding: instance.store.memory(at: 0).data[Int(start) ..< Int(start + offset)],
+                        decoding: instance.store
+                            .memory(at: 0)
+                            .data[Int(start) ..< Int(start + offset)],
                         as: UTF8.self
                     )
 

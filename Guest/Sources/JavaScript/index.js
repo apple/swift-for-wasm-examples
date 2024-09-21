@@ -12,9 +12,11 @@
 
 import { Encoder } from './encoder.js';
 
-const canvasElement = document.getElementById('tutorial');
+const canvasElement = document.getElementsByClassName("plotter")[0];
 const canvasContext = canvasElement.getContext('2d');
 canvasContext.strokeStyle = 'white';
+
+const contexts = [canvasContext];
 
 const decoder = new TextDecoder();
 const loggerElement = document.getElementById('wasm-logger');
@@ -43,11 +45,11 @@ const importsObject = {
     },
   },
   canvas: {
-    beginPath: () => canvasContext.beginPath(),
-    stroke: () => canvasContext.stroke(),
-    moveTo: (x, y) => canvasContext.moveTo(x, y),
-    lineTo: (x, y) => canvasContext.lineTo(x, y),
-  }, 
+    beginPath: (i) => contexts[i].beginPath(),
+    stroke: (i) => contexts[i].stroke(),
+    moveTo: (i, x, y) => contexts[i].moveTo(x, y),
+    lineTo: (i, x, y) => contexts[i].lineTo(x, y),
+  },
   console: {
     log: (address, byteCount) => {
       loggerElement.innerHTML = wasmMemoryAsString(address, byteCount);
@@ -64,4 +66,4 @@ const { instance } = await WebAssembly.instantiateStreaming(
   }
 );
 
-instance.exports.main();
+instance.exports.main(0);

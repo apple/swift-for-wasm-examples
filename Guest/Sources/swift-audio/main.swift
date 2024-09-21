@@ -11,7 +11,7 @@
 //===----------------------------------------------------------------------===//
 
 @_expose(wasm, "main")
-func main() {
+func main(canvasContext: Int) {
     let sequencedKick = Sequencer(
         instrument: Kick(),
         sequence: [.noteOff, .noteOn(.c.octave(1)), .noteOff, .noteOn(.c.octave(1))],
@@ -55,6 +55,6 @@ func main() {
     Audio.encode(buffer)
 
     Plotter<HTMLCanvas>(
-        width: 1000, height: 200, margin: 10
+        canvasContext: canvasContext, width: 1000, height: 200, margin: 10
     ).plot(buffer)
 }

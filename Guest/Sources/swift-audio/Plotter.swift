@@ -11,27 +11,29 @@
 //===----------------------------------------------------------------------===//
 
 struct Plotter<CanvasType: Canvas> {
+    let canvasContext: Int
     let height: Int
     let width: Int
     let centerY: Int
     let scaleFactor: Float
 
-    init(width: Int, height: Int, margin: Int) {
+    init(canvasContext: Int, width: Int, height: Int, margin: Int) {
+        self.canvasContext = canvasContext
         self.width = width
         self.height = height
-        self.centerY = (height + margin) / 2
-        self.scaleFactor = Float(height) / 4.0
+        centerY = (height + margin) / 2
+        scaleFactor = Float(height) / 4.0
     }
 
     func plot(_ audioBuffer: borrowing AudioBuffer) {
-        let samplesPerPixel = audioBuffer.storage.count / self.width
+        let samplesPerPixel = audioBuffer.storage.count / width
 
         var sampleCounter = 0
         var averageCounter = 0
         var average: Float = 0
 
-        CanvasType.beginPath()
-        CanvasType.moveTo(x: 0, y: self.centerY)
+        CanvasType.beginPath(ctx: canvasContext)
+        CanvasType.moveTo(ctx: canvasContext, x: 0, y: centerY)
         for sample in audioBuffer.storage {
             average += sample
 
@@ -40,9 +42,11 @@ struct Plotter<CanvasType: Canvas> {
                 average += sample
             } else {
                 CanvasType.lineTo(
+                    ctx: canvasContext,
                     x: averageCounter,
-                    y: self.centerY + Int(average * self.scaleFactor / Float(samplesPerPixel))
+                    y: centerY + Int(average * scaleFactor / Float(samplesPerPixel))
                 )
+
                 averageCounter += 1
                 average = 0
                 sampleCounter = 0
@@ -51,11 +55,12 @@ struct Plotter<CanvasType: Canvas> {
 
         if average != 0 {
             CanvasType.lineTo(
+                ctx: canvasContext,
                 x: averageCounter,
-                y: self.centerY + Int(average * self.scaleFactor / Float(sampleCounter))
+                y: centerY + Int(average * scaleFactor / Float(sampleCounter))
             )
         }
 
-        CanvasType.stroke()
+        CanvasType.stroke(ctx: canvasContext)
     }
 }

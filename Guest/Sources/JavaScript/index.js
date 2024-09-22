@@ -29,19 +29,19 @@ function wasmMemoryAsFloat32Array(address, byteCount) {
   return new Float32Array(instance.exports.memory.buffer.slice(address, address + byteCount));
 }
 
-function generate() {
+function generate(i) {
   const blob = wavEncoder.finish();
   const audioURL = URL.createObjectURL(blob);
-  document.getElementById('audio').setAttribute('src', audioURL);
+  document.getElementsByClassName('audio')[i].setAttribute('src', audioURL);
 }
 
 const wavEncoder = new Encoder(44100, 1);
 
 const importsObject = {
   audio: {
-    encode: (address, byteCount) => {
+    encode: (i, address, byteCount) => {
       wavEncoder.encode([wasmMemoryAsFloat32Array(address, byteCount)])
-      generate();
+      generate(i);
     },
   },
   canvas: {

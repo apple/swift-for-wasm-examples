@@ -11,14 +11,14 @@
 //===----------------------------------------------------------------------===//
 
 struct Plotter<CanvasType: Canvas> {
-    let canvasContext: Int
+    let contextIndex: Int
     let height: Int
     let width: Int
     let centerY: Int
     let scaleFactor: Float
 
-    init(canvasContext: Int, width: Int, height: Int, margin: Int) {
-        self.canvasContext = canvasContext
+    init(contextIndex: Int, width: Int, height: Int, margin: Int) {
+        self.contextIndex = contextIndex
         self.width = width
         self.height = height
         centerY = (height + margin) / 2
@@ -32,8 +32,8 @@ struct Plotter<CanvasType: Canvas> {
         var averageCounter = 0
         var average: Float = 0
 
-        CanvasType.beginPath(ctx: canvasContext)
-        CanvasType.moveTo(ctx: canvasContext, x: 0, y: centerY)
+        CanvasType.beginPath(ctx: contextIndex)
+        CanvasType.moveTo(ctx: contextIndex, x: 0, y: centerY)
         for sample in audioBuffer.storage {
             average += sample
 
@@ -42,7 +42,7 @@ struct Plotter<CanvasType: Canvas> {
                 average += sample
             } else {
                 CanvasType.lineTo(
-                    ctx: canvasContext,
+                    ctx: contextIndex,
                     x: averageCounter,
                     y: centerY + Int(average * scaleFactor / Float(samplesPerPixel))
                 )
@@ -55,12 +55,12 @@ struct Plotter<CanvasType: Canvas> {
 
         if average != 0 {
             CanvasType.lineTo(
-                ctx: canvasContext,
+                ctx: contextIndex,
                 x: averageCounter,
                 y: centerY + Int(average * scaleFactor / Float(sampleCounter))
             )
         }
 
-        CanvasType.stroke(ctx: canvasContext)
+        CanvasType.stroke(ctx: contextIndex)
     }
 }

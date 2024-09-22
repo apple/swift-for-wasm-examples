@@ -40,14 +40,6 @@ private func serveFile(path: FilePath) async throws -> Response {
     })
 }
 
-private func serveHTML(_ string: String) -> Response {
-    .init(
-        status: .ok,
-        headers: .init(dictionaryLiteral: (.contentType, "text/html")),
-        body: .init(byteBuffer: .init(string: string))
-    )
-}
-
 enum UploadError: Error {
     case invalidFileName
 }
@@ -62,10 +54,9 @@ func buildRouter() -> Router<AppRequestContext> {
         }
 
         .get("/") { _, _ in
-            Response(
-                status: .temporaryRedirect,
-                headers: [.location: "/public/index.html"]
-            )
+            IndexPage(modules: [
+                .init(name: "Mix", path: "/public/.build/wasm32-unknown-none-wasm/release/swift-audio.wasm")
+            ])
         }
 
         .get("/public/**") { req, ctx in

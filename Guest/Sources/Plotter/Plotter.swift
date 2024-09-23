@@ -25,8 +25,8 @@ struct Plotter<CanvasType: Canvas> {
         scaleFactor = Float(height) / 4.0
     }
 
-    func plot(_ audioBuffer: borrowing AudioBuffer) {
-        let samplesPerPixel = audioBuffer.storage.count / width
+    func plot(_ audioBuffer: UnsafeBufferPointer<Float>) {
+        let samplesPerPixel = audioBuffer.count / width
 
         var sampleCounter = 0
         var averageCounter = 0
@@ -34,7 +34,7 @@ struct Plotter<CanvasType: Canvas> {
 
         CanvasType.beginPath(ctx: contextIndex)
         CanvasType.moveTo(ctx: contextIndex, x: 0, y: centerY)
-        for sample in audioBuffer.storage {
+        for sample in audioBuffer {
             average += sample
 
             if sampleCounter < samplesPerPixel {

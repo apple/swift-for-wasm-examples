@@ -53,8 +53,4 @@ func main(contextIndex: Int) {
         source: &mixer
     )
     Audio.encode(contextIndex: contextIndex, buffer)
-
-    Plotter<HTMLCanvas>(
-        contextIndex: contextIndex, width: 1000, height: 200, margin: 10
-    ).plot(buffer)
 }

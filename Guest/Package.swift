@@ -4,21 +4,21 @@
 import PackageDescription
 
 let embeddedSwiftSettings: [SwiftSetting] = [
-    .enableExperimentalFeature("Embedded"), 
+    .enableExperimentalFeature("Embedded"),
     .enableExperimentalFeature("Extern"),
     .interoperabilityMode(.Cxx),
-    .unsafeFlags(["-wmo", "-disable-cmo", "-Xfrontend", "-gnone"])
+    .unsafeFlags(["-wmo", "-disable-cmo", "-Xfrontend", "-gnone"]),
 ]
 
 let embeddedCSettings: [CSetting] = [
-    .unsafeFlags(["-fdeclspec"])
+    .unsafeFlags(["-fdeclspec"]),
 ]
 
 let linkerSettings: [LinkerSetting] = [
     .unsafeFlags([
         "-Xclang-linker", "-nostdlib",
-        "-Xlinker", "--no-entry"
-    ])
+        "-Xlinker", "--no-entry",
+    ]),
 ]
 
 let libcSettings: [CSetting] = [
@@ -37,6 +37,13 @@ let package = Package(
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
+        .executableTarget(
+            name: "plotter",
+            dependencies: ["dlmalloc"],
+            cSettings: embeddedCSettings,
+            swiftSettings: embeddedSwiftSettings,
+            linkerSettings: linkerSettings
+        ),
         .executableTarget(
             name: "swift-audio",
             dependencies: ["VultDSP", "dlmalloc"],

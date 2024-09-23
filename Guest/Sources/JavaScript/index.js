@@ -24,13 +24,7 @@ function wasmMemoryAsFloat32Array(i, address, byteCount) {
   return new Float32Array(moduleInstances[i].exports.memory.buffer.slice(address, address + byteCount));
 }
 
-function generateAudioElement(i) {
-  const blob = wavEncoder.finish();
-  const audioURL = URL.createObjectURL(blob);
-  document.getElementsByClassName('audio')[i].setAttribute('src', audioURL);
-}
 
-const wavEncoder = new Encoder(44100, 1);
 const contexts = [];
 
 
@@ -54,8 +48,12 @@ const audioImports = {
   audio: {
     encode: (i, address, byteCount) => {
       const audioBuffer = wasmMemoryAsFloat32Array(i, address, byteCount);
+      const wavEncoder = new Encoder(44100, 1);
       wavEncoder.encode([audioBuffer]);
-      generateAudioElement(i);
+      const blob = wavEncoder.finish();
+
+      const audioURL = URL.createObjectURL(blob);
+      document.getElementsByClassName('audio')[i].setAttribute('src', audioURL);
 
       const bufferPointer = plotterExports.allocateAudioBuffer(byteCount);
       const memoryBytes = new Float32Array(plotterExports.memory.buffer);
@@ -80,7 +78,7 @@ const pluginElements = document.getElementsByClassName("plugin");
 
 for (let i = 0; i < pluginElements.length; ++i) {
   const element = pluginElements[i];
-  const canvasElement = element.getElementsByClassName("plotter")[i];
+  const canvasElement = element.getElementsByClassName("plotter")[0];
   const canvasContext = canvasElement.getContext('2d');
   canvasContext.strokeStyle = 'white';
 

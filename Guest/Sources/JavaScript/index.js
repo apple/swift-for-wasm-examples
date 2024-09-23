@@ -12,21 +12,16 @@
 
 import { Encoder } from './encoder.js';
 
-const canvasElement = document.getElementsByClassName("plotter")[0];
-const canvasContext = canvasElement.getContext('2d');
-canvasContext.strokeStyle = 'white';
-
-const contexts = [canvasContext];
-
 const decoder = new TextDecoder();
 const loggerElement = document.getElementById('wasm-logger');
+const moduleInstances = [];
 
-function wasmMemoryAsString(address, byteCount) {
-  return decoder.decode(instance.exports.memory.buffer.slice(address, address + byteCount));
+function wasmMemoryAsString(i, address, byteCount) {
+  return decoder.decode(moduleInstances[i].exports.memory.buffer.slice(address, address + byteCount));
 }
 
-function wasmMemoryAsFloat32Array(address, byteCount) {
-  return new Float32Array(instance.exports.memory.buffer.slice(address, address + byteCount));
+function wasmMemoryAsFloat32Array(i, address, byteCount) {
+  return new Float32Array(moduleInstances[i].exports.memory.buffer.slice(address, address + byteCount));
 }
 
 function generate(i) {
@@ -36,11 +31,12 @@ function generate(i) {
 }
 
 const wavEncoder = new Encoder(44100, 1);
+const contexts = [];
 
 const importsObject = {
   audio: {
     encode: (i, address, byteCount) => {
-      wavEncoder.encode([wasmMemoryAsFloat32Array(address, byteCount)])
+      wavEncoder.encode([wasmMemoryAsFloat32Array(i, address, byteCount)])
       generate(i);
     },
   },
@@ -51,19 +47,30 @@ const importsObject = {
     lineTo: (i, x, y) => contexts[i].lineTo(x, y),
   },
   console: {
-    log: (address, byteCount) => {
-      loggerElement.innerHTML = wasmMemoryAsString(address, byteCount);
+    log: (i, address, byteCount) => {
+      loggerElement.innerHTML = wasmMemoryAsString(i, address, byteCount);
     },
     logInt: (x) => console.log(x),
     logFloat: (x) => console.log(x),
   }
 };
 
-const { instance } = await WebAssembly.instantiateStreaming(
-  fetch('.build/wasm32-unknown-none-wasm/release/swift-audio.wasm'),
-  {
-    ...importsObject,
-  }
-);
+const pluginElements = document.getElementsByClassName("plugin");
 
-instance.exports.main(0);
+for (let i = 0; i < pluginElements.length; ++i) {
+  const element = pluginElements[i];
+  const canvasElement = element.getElementsByClassName("plotter")[i];
+  const canvasContext = canvasElement.getContext('2d');
+  canvasContext.strokeStyle = 'white';
+
+  contexts.push(canvasContext);
+
+  const { instance } = await WebAssembly.instantiateStreaming(
+    fetch(element.dataset.modulePath),
+    { ...importsObject }
+  );
+
+  moduleInstances.push(instance);
+
+  instance.exports.main(i);
+}

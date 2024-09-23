@@ -43,7 +43,7 @@ struct IndexPage: ResponseGenerator {
               """
               <h1 id="wasm-logger">\(module.name)</h1>
               <div
-                class="moduleNode"
+                class="plugin"
                 data-module-path="\(module.path)"
                 style="display: flex; flex-direction: column; align-items: flex-start; gap: 1rem;"
               >

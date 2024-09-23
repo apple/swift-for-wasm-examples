@@ -12,7 +12,7 @@
 
 @_extern(wasm, module: "console", name: "log")
 @_extern(c)
-private func consoleLog(address: Int, byteCount: Int)
+private func consoleLog(ctx: Int, address: Int, byteCount: Int)
 
 @_extern(wasm, module: "console", name: "logInt")
 @_extern(c)
@@ -23,8 +23,9 @@ func consoleLogInt(_ int: Int)
 func consoleLogFloat(_ float: Float)
 
 enum Console {
-    static func log(_ string: StaticString) {
+    static func log(contextIndex: Int, string: StaticString) {
         consoleLog(
+            ctx: contextIndex,
             address: Int(bitPattern: string.utf8Start),
             byteCount: string.utf8CodeUnitCount
         )

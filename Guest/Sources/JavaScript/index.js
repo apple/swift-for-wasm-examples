@@ -24,7 +24,7 @@ function wasmMemoryAsFloat32Array(i, address, byteCount) {
   return new Float32Array(moduleInstances[i].exports.memory.buffer.slice(address, address + byteCount));
 }
 
-function generate(i) {
+function generateAudioElement(i) {
   const blob = wavEncoder.finish();
   const audioURL = URL.createObjectURL(blob);
   document.getElementsByClassName('audio')[i].setAttribute('src', audioURL);
@@ -33,19 +33,40 @@ function generate(i) {
 const wavEncoder = new Encoder(44100, 1);
 const contexts = [];
 
-const importsObject = {
-  audio: {
-    encode: (i, address, byteCount) => {
-      wavEncoder.encode([wasmMemoryAsFloat32Array(i, address, byteCount)])
-      generate(i);
-    },
-  },
+
+const canvasImports = {
   canvas: {
     beginPath: (i) => contexts[i].beginPath(),
     stroke: (i) => contexts[i].stroke(),
     moveTo: (i, x, y) => contexts[i].moveTo(x, y),
     lineTo: (i, x, y) => contexts[i].lineTo(x, y),
   },
+}
+
+const plotterModule = await WebAssembly.instantiateStreaming(
+  fetch(".build/wasm32-unknown-none-wasm/release/plotter.wasm"),
+  { ...canvasImports }
+);
+
+const plotterExports = plotterModule.instance.exports;
+
+const audioImports = {
+  audio: {
+    encode: (i, address, byteCount) => {
+      const audioBuffer = wasmMemoryAsFloat32Array(i, address, byteCount);
+      wavEncoder.encode([audioBuffer]);
+      generateAudioElement(i);
+
+      const bufferPointer = plotterExports.allocateAudioBuffer(byteCount);
+      const memoryBytes = new Float32Array(plotterExports.memory.buffer);
+      memoryBytes.set(audioBuffer, bufferPointer / 4);
+      plotterExports.plot(i, 1000, 200, 10, bufferPointer, byteCount);
+      plotterExports.free(bufferPointer);
+    },
+  },
+}
+
+const consoleImports = {
   console: {
     log: (i, address, byteCount) => {
       loggerElement.innerHTML = wasmMemoryAsString(i, address, byteCount);
@@ -67,7 +88,7 @@ for (let i = 0; i < pluginElements.length; ++i) {
 
   const { instance } = await WebAssembly.instantiateStreaming(
     fetch(element.dataset.modulePath),
-    { ...importsObject }
+    { ...audioImports, ...consoleImports }
   );
 
   moduleInstances.push(instance);

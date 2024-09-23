@@ -34,8 +34,17 @@ func plot(
     start: UnsafeRawPointer,
     byteCount: Int
 ) {
-    let plotter = Plotter<HTMLCanvas>(contextIndex: contextIndex, width: width, height: height, margin: margin)
-    let buffer = UnsafeBufferPointer<Float>(start: start.assumingMemoryBound(to: Float.self), count: byteCount)
+    let plotter = Plotter<HTMLCanvas>(
+        contextIndex: contextIndex,
+        width: width,
+        height: height,
+        margin: margin
+    )
+    let samplesCount = byteCount / MemoryLayout<Float>.stride
+    let buffer = UnsafeBufferPointer<Float>(
+        start: start.assumingMemoryBound(to: Float.self),
+        count: samplesCount
+    )
 
     plotter.plot(buffer)
 }

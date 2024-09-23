@@ -54,8 +54,15 @@ func buildRouter() -> Router<AppRequestContext> {
         }
 
         .get("/") { _, _ in
+            Response(
+                status: .temporaryRedirect,
+                headers: [.location: "/public/index.html"]
+            )
+        }
+
+        .get("/public/index.html") { _, _ in
             IndexPage(modules: [
-                .init(name: "Mix", path: "/public/.build/wasm32-unknown-none-wasm/release/swift-audio.wasm")
+                .init(name: "Mix", path: ".build/wasm32-unknown-none-wasm/release/swift-audio.wasm")
             ])
         }
 

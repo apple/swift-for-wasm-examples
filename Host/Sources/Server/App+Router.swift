@@ -45,8 +45,13 @@ enum UploadError: Error {
 }
 
 /// Build router
-func buildRouter() -> Router<AppRequestContext> {
-    Router(context: AppRequestContext.self)
+func buildRouter() async throws -> Router<AppRequestContext> {
+    let wasmModules = try await discoverModules(
+        directory: storagePath.appending(".build/wasm32-unknown-none-wasm/release"),
+        root: storagePath
+    )
+
+    return Router(context: AppRequestContext.self)
         // Add middleware
         .addMiddleware {
             // logging middleware
@@ -61,9 +66,11 @@ func buildRouter() -> Router<AppRequestContext> {
         }
 
         .get("/public/index.html") { _, _ in
-            IndexPage(modules: [
-                .init(name: "Mix", path: ".build/wasm32-unknown-none-wasm/release/swift-audio.wasm")
-            ])
+            IndexPage(modules: wasmModules)
+        }
+
+        .get("/mix") { _, _ in
+            try MixedOutput(modules: wasmModules)
         }
 
         .get("/public/**") { req, ctx in

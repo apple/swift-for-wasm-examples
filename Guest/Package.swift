@@ -7,7 +7,7 @@ let embeddedSwiftSettings: [SwiftSetting] = [
     .enableExperimentalFeature("Embedded"),
     .enableExperimentalFeature("Extern"),
     .interoperabilityMode(.Cxx),
-    .unsafeFlags(["-wmo", "-disable-cmo", "-Xfrontend", "-gnone"]),
+    .unsafeFlags(["-wmo", "-disable-cmo", "-Xfrontend", "-gnone", "-disable-stack-protector"]),
 ]
 
 let embeddedCSettings: [CSetting] = [
@@ -38,15 +38,8 @@ let package = Package(
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .executableTarget(
-            name: "plotter",
+            name: "Plotter",
             dependencies: ["dlmalloc"],
-            cSettings: embeddedCSettings,
-            swiftSettings: embeddedSwiftSettings,
-            linkerSettings: linkerSettings
-        ),
-        .executableTarget(
-            name: "swift-audio",
-            dependencies: ["VultDSP", "dlmalloc"],
             cSettings: embeddedCSettings,
             swiftSettings: embeddedSwiftSettings,
             linkerSettings: linkerSettings
@@ -58,3 +51,15 @@ let package = Package(
         ),
     ]
 )
+
+for module in ["Kick", "HiHat", "Bass", "Mix"] {
+    package.targets.append(
+        .executableTarget(
+            name: module,
+            dependencies: ["VultDSP", "dlmalloc"],
+            cSettings: embeddedCSettings,
+            swiftSettings: embeddedSwiftSettings + [.define(module.uppercased() + "_ENTRYPOINT")],
+            linkerSettings: linkerSettings
+        )
+    )
+}

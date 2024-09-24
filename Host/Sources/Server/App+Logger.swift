@@ -26,7 +26,7 @@ public func buildApplication(_ arguments: some AppArguments) async throws -> som
             .info
         return logger
     }()
-    let router = buildRouter()
+    let router = try await buildRouter()
     let app = Application(
         router: router,
         configuration: .init(

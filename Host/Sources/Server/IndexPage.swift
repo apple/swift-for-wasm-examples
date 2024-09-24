@@ -1,5 +1,7 @@
+import Foundation
 import Hummingbird
-import SystemPackage
+import _NIOFileSystem
+@preconcurrency import SystemPackage
 
 private func serveHTML(_ string: String) -> Response {
     .init(
@@ -9,13 +11,13 @@ private func serveHTML(_ string: String) -> Response {
     )
 }
 
-struct IndexPage: ResponseGenerator {
-    struct Module {
+struct IndexPage: ResponseGenerator, Sendable {
+    struct Module: Sendable {
         let name: String
         let path: FilePath
     }
 
-    let modules: [Module]
+    var modules: [Module] = []
 
     func response(from request: Request, context: some RequestContext) throws -> Response {
         serveHTML(
@@ -39,7 +41,7 @@ struct IndexPage: ResponseGenerator {
                 }
                 </style>
               </body>
-              \(modules.map { module in
+              \(modules.sorted(using: KeyPathComparator(\.name, order: .forward)).map { module in
               """
               <h1 id="wasm-logger">\(module.name)</h1>
               <div
@@ -55,5 +57,29 @@ struct IndexPage: ResponseGenerator {
             </html>
             """
         )
+    }
+}
+
+func discoverModules(directory: FilePath, root: FilePath) async throws -> [IndexPage.Module] {
+    try await FileSystem.shared.withDirectoryHandle(atPath: directory) {
+        var modules = [IndexPage.Module]()
+        let dirContents = $0.listContents()
+
+        for try await module in dirContents where module.type == .regular && module.path.isSynthModule {
+            var path = module.path
+            _ = path.removePrefix(root)
+            modules.append(.init(
+                name: module.path.lastComponent?.stem ?? "Module",
+                path: path
+            ))
+        }
+
+        return modules
+    }
+}
+
+extension FilePath {
+    var isSynthModule: Bool {
+        self.extension == "wasm" && self.stem != "Plotter"
     }
 }

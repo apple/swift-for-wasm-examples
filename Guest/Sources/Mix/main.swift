@@ -12,13 +12,13 @@
 
 @_expose(wasm, "main")
 func main(contextIndex: Int) {
-    let sequencedKick = Sequencer(
+    var sequencedKick = Sequencer(
         instrument: Kick(),
         sequence: [.noteOff, .noteOn(.c.octave(1)), .noteOff, .noteOn(.c.octave(1))],
         stepLengthInSeconds: 0.25
     )
 
-    let sequencedHiHat = Sequencer(
+    var sequencedHiHat = Sequencer(
         instrument: HiHat(),
         sequence: [
             .noteOff, .noteOff, .noteOff, .noteOff,
@@ -29,7 +29,7 @@ func main(contextIndex: Int) {
         stepLengthInSeconds: 0.125
     )
 
-    let sequencedBass = Sequencer(
+    var sequencedBass = Sequencer(
         instrument: Bass(),
         sequence: [
             .noteOn(.c.octave(1)), .noteOff, .noteOn(.d.octave(1)), .noteOff, .noteOn(.e.octave(1)),
@@ -38,19 +38,38 @@ func main(contextIndex: Int) {
         stepLengthInSeconds: 0.25
     )
 
-    var mixer = Mixer(
-        source1: sequencedHiHat,
-        volume1: 0.05,
-        source2: sequencedKick,
-        volume2: 0.6,
-        source3: sequencedBass,
-        volume3: 0.1
-    )
-
     let totalLengthInSeconds = 6
-    let buffer = AudioBuffer(
-        capacity: sampleRate * totalLengthInSeconds,
-        source: &mixer
-    )
+
+    #if KICK_ENTRYPOINT
+        let buffer = AudioBuffer(
+            capacity: sampleRate * totalLengthInSeconds,
+            source: &sequencedKick
+        )
+    #elseif HIHAT_ENTRYPOINT
+        let buffer = AudioBuffer(
+            capacity: sampleRate * totalLengthInSeconds,
+            source: &sequencedHiHat
+        )
+    #elseif BASS_ENTRYPOINT
+        let buffer = AudioBuffer(
+            capacity: sampleRate * totalLengthInSeconds,
+            source: &sequencedBass
+        )
+    #else
+        var mixer = Mixer(
+            source1: sequencedHiHat,
+            volume1: 0.05,
+            source2: sequencedKick,
+            volume2: 0.6,
+            source3: sequencedBass,
+            volume3: 0.1
+        )
+
+        let buffer = AudioBuffer(
+            capacity: sampleRate * totalLengthInSeconds,
+            source: &mixer
+        )
+    #endif
+
     Audio.encode(contextIndex: contextIndex, buffer)
 }

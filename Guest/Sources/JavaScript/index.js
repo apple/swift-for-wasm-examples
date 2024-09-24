@@ -24,9 +24,7 @@ function wasmMemoryAsFloat32Array(i, address, byteCount) {
   return new Float32Array(moduleInstances[i].exports.memory.buffer.slice(address, address + byteCount));
 }
 
-
 const contexts = [];
-
 
 const canvasImports = {
   canvas: {

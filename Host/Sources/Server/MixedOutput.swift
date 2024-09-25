@@ -11,13 +11,15 @@ struct MixedOutput: ResponseGenerator {
     func response(from request: Request, context: some RequestContext) throws -> Response {
         var body = ByteBuffer()
         let runtime = Runtime()
+
+        // Instantiate each Wasm module
         for module in modules {
             let moduleInstance = try runtime.instantiate(module: module)
-            for value in try runtime.invoke(moduleInstance, function: "main") {
-                switch value {
-                case .f32(let bitPattern): body.writeInteger(bitPattern)
-                default: continue
-                }
+
+            // Call entrypoint module function
+            let results = try runtime.invoke(moduleInstance, function: "main")
+            for case .f32(let bitPattern) in results {
+                body.writeInteger(bitPattern)
             }
         }
 

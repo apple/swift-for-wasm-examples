@@ -8,6 +8,7 @@ let watURL = URL(fileURLWithPath: #filePath)
     .deletingLastPathComponent()
     .appendingPathComponent("demo.wat")
 
+// Parse from WAT to binary
 let binaryModule = try wat2wasm(String(decoding: Data(contentsOf: watURL), as: UTF8.self))
 
 let parsedModule = try parseWasm(bytes: binaryModule)

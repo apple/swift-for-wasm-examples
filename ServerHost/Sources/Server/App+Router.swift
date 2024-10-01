@@ -76,4 +76,23 @@ func buildRouter() async throws -> Router<AppRequestContext> {
 
             return try await serveFile(path: storagePath.appending(path))
         }
+
+        .post("/wasm-module/:name") { req, ctx in
+            guard let fileName = ctx.parameters.get("name")
+            else { throw UploadError.invalidFileName }
+
+            try await FileSystem.shared.withFileHandle(
+                forWritingAt: storagePath.appending(String(fileName)),
+                options: .newFile(replaceExisting: true)
+            ) {
+                var offset: Int64 = 0
+                for try await buffer in req.body {
+                    let count = buffer.readableBytes
+                    try await $0.write(contentsOf: buffer, toAbsoluteOffset: offset)
+                    offset += Int64(count)
+                }
+            }
+
+            return HTTPResponse.Status.ok
+        }
 }

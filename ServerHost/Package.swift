@@ -4,7 +4,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "WasmHost",
+    name: "ServerHost",
     platforms: [.macOS(.v14)],
     dependencies: [
         .package(url: "https://github.com/apple/swift-nio.git", from: "2.72.0"),
@@ -16,14 +16,6 @@ let package = Package(
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
-        .executableTarget(
-            name: "WATExample",
-            dependencies: [
-                .product(name: "WAT", package: "WasmKit"),
-                .product(name: "WasmKit", package: "WasmKit"),
-            ]
-        ),
-
         .executableTarget(
             name: "Server",
             dependencies: [

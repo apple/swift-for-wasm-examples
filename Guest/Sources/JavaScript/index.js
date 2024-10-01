@@ -40,27 +40,33 @@ const plotterModule = await WebAssembly.instantiateStreaming(
   { ...canvasImports }
 );
 
+function encodeAndPlot(audioBuffer, context) {
+  const wavEncoder = new Encoder(44100, 1);
+  wavEncoder.encode([audioBuffer]);
+  const blob = wavEncoder.finish();
+
+  const audioURL = URL.createObjectURL(blob);
+  document.getElementsByClassName('audio')[context].setAttribute('src', audioURL);
+
+  const byteCount = audioBuffer.length * 4;
+  const bufferPointer = plotterExports.allocateAudioBuffer(byteCount);
+  const memoryBytes = new Float32Array(plotterExports.memory.buffer);
+  memoryBytes.set(audioBuffer, bufferPointer / 4);
+  plotterExports.plot(context, 1000, 200, 10, bufferPointer, byteCount);
+  plotterExports.free(bufferPointer);
+}
+
 const plotterExports = plotterModule.instance.exports;
 
 const audioImports = {
   audio: {
     encode: (i, address, byteCount) => {
       const audioBuffer = wasmMemoryAsFloat32Array(i, address, byteCount);
-      const wavEncoder = new Encoder(44100, 1);
-      wavEncoder.encode([audioBuffer]);
-      const blob = wavEncoder.finish();
 
-      const audioURL = URL.createObjectURL(blob);
-      document.getElementsByClassName('audio')[i].setAttribute('src', audioURL);
-
-      const bufferPointer = plotterExports.allocateAudioBuffer(byteCount);
-      const memoryBytes = new Float32Array(plotterExports.memory.buffer);
-      memoryBytes.set(audioBuffer, bufferPointer / 4);
-      plotterExports.plot(i, 1000, 200, 10, bufferPointer, byteCount);
-      plotterExports.free(bufferPointer);
+      encodeAndPlot(audioBuffer, i);
     },
   },
-}
+};
 
 const consoleImports = {
   console: {
@@ -90,4 +96,21 @@ for (let i = 0; i < pluginElements.length; ++i) {
   moduleInstances.push(instance);
 
   instance.exports.main(i);
+}
+
+const mixElement = document.getElementById("tracks-mix");
+
+if (mixElement) {
+  const canvasElement = mixElement.getElementsByClassName("plotter")[0];
+  const canvasContext = canvasElement.getContext('2d');
+  canvasContext.strokeStyle = 'white';
+
+  contexts.push(canvasContext);
+
+  const response = await fetch("/mix");
+  const responseBlob = await response.blob();
+
+  const audioBuffer = new Float32Array(await responseBlob.arrayBuffer());
+
+  encodeAndPlot(audioBuffer, contexts.length - 1);
 }

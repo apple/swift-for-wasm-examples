@@ -76,7 +76,7 @@ See [https://swift.org/CONTRIBUTORS.txt](https://swift.org/CONTRIBUTORS.txt) for
 
 See [`LICENSE-vendored.md`](https://github.com/apple/swift-for-wasm-examples/blob/main/LICENSE-vendored.md) for exact licenses of code vendored in this repository. Specifically:
 
-* Code in `Sources/dlmalloc` directory is derived from wasi-libc: https://github.com/WebAssembly/wasi-libc
+* Code in `Guest/Sources/dlmalloc` directory is derived from wasi-libc: https://github.com/WebAssembly/wasi-libc
 
 > wasi-libc as a whole is multi-licensed under the Apache License v2.0 with LLVM Exceptions, the Apache License v2.0, and the MIT License. See the LICENSE-APACHE-LLVM, LICENSE-APACHE and LICENSE-MIT files, respectively, for details.
 >
@@ -89,11 +89,18 @@ See [`LICENSE-vendored.md`](https://github.com/apple/swift-for-wasm-examples/blo
 * .wav format encoding implementation is derived from WavAudioEncoder.js library https://github.com/higuma/wav-audio-encoder-js and is licensed as following:
 
 > The MIT License (MIT)
-> 
+>
 > Copyright (c) 2015 Yuji Miyane
 
-* Code in `Sources/VultDSP` directory is derived from https://github.com/vult-dsp/vult and is licensed as following:
+* Code in `Guest/Sources/VultDSP` directory is derived from https://github.com/vult-dsp/vult and is licensed as following:
 
 > MIT License
-> 
+>
 > Copyright (c) 2017 Leonardo Laguna Ruiz
+
+* Web server starter template code is derived from [the Hummingbird template package](https://github.com/hummingbird-project/template) and is licensed as following:
+
+> Copyright (c) 2024 Adam Fowler.
+> Licensed under Apache License v2.0.
+>
+> See https://github.com/hummingbird-project/template/blob/main/LICENSE for license information

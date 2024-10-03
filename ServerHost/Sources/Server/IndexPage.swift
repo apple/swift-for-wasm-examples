@@ -19,6 +19,28 @@ struct IndexPage: ResponseGenerator, Sendable {
 
     var modules: [Module] = []
 
+    var modulesList: String {
+        if self.modules.isEmpty {
+            """
+            <h1 id="wasm-logger"><a href="/public/upload.html">Upload Wasm plugins</a> to get started</h1>
+            """
+        } else {
+            self.modules.sorted(using: KeyPathComparator(\.name, order: .forward)).map { module in
+                """
+                <h1 id="wasm-logger">\(module.name)</h1>
+                <div
+                  class="plugin"
+                  data-module-path="\(module.path)"
+                  style="display: flex; flex-direction: column; align-items: flex-start; gap: 1rem;"
+                >
+                  <canvas class="plotter" width="1000" height="210"></canvas>
+                  <audio class="audio" type="audio.wav" controls></audio>
+                </div>
+                """
+            }.joined(separator: "\n")
+        }
+    }
+
     func response(from request: Request, context: some RequestContext) throws -> Response {
         serveHTML(
             """
@@ -26,8 +48,6 @@ struct IndexPage: ResponseGenerator, Sendable {
               <head>
                 <meta charset="utf-8">
                 <title>Swift Audio Workstation</title>
-              </head>
-              <body>
                 <script type="module" src="/public/Sources/JavaScript/index.js">
                 </script>
                 <style>
@@ -39,21 +59,14 @@ struct IndexPage: ResponseGenerator, Sendable {
                   font-family: sans-serif;
                   color: white;
                 }
+                #wasm-logger a {
+                  color: #aabbcc;g
+                }
                 </style>
+              </head>
+              <body>
+                \(self.modulesList)
               </body>
-              \(modules.sorted(using: KeyPathComparator(\.name, order: .forward)).map { module in
-              """
-              <h1 id="wasm-logger">\(module.name)</h1>
-              <div
-                class="plugin"
-                data-module-path="\(module.path)"
-                style="display: flex; flex-direction: column; align-items: flex-start; gap: 1rem;"
-              >
-                <canvas class="plotter" width="1000" height="210"></canvas>
-                <audio class="audio" type="audio.wav" controls></audio>
-              </div>
-              """
-              }.joined(separator: "\n"))
             </html>
             """
         )
@@ -80,6 +93,9 @@ func discoverModules(directory: FilePath, root: FilePath) async throws -> [Index
 
 extension FilePath {
     var isSynthModule: Bool {
-        self.extension == "wasm" && self.stem != "Plotter"
+        print(self.string)
+        let result = self.extension == "wasm" && self.stem != "Plotter"
+        print(result)
+        return result
     }
 }

@@ -43,12 +43,7 @@ enum UploadError: Error {
 
 /// Build router
 func buildRouter() async throws -> Router<AppRequestContext> {
-    let wasmModules = try await discoverModules(
-        directory: storagePath.appending(".build/wasm32-unknown-none-wasm/release"),
-        root: storagePath
-    )
-
-    return Router(context: AppRequestContext.self)
+    Router(context: AppRequestContext.self)
         // Add middleware
         .addMiddleware {
             // logging middleware
@@ -63,18 +58,12 @@ func buildRouter() async throws -> Router<AppRequestContext> {
         }
 
         .get("/public/index.html") { _, _ in
-            IndexPage(modules: wasmModules)
-        }
+            let wasmModules = try await discoverModules(
+                directory: storagePath,
+                root: storagePath
+            )
 
-        .get("/mix") { _, _ in
-            try MixedOutput(modules: wasmModules)
-        }
-
-        .get("/public/**") { req, ctx in
-            // return catchAll captured string
-            let path = ctx.parameters.getCatchAll().joined(separator: "/")
-
-            return try await serveFile(path: storagePath.appending(path))
+            return IndexPage(modules: wasmModules)
         }
 
         .post("/wasm-module/:name") { req, ctx in
@@ -94,5 +83,21 @@ func buildRouter() async throws -> Router<AppRequestContext> {
             }
 
             return HTTPResponse.Status.ok
+        }
+
+        .get("/public/**") { req, ctx in
+            // return catchAll captured string
+            let path = ctx.parameters.getCatchAll().joined(separator: "/")
+
+            return try await serveFile(path: storagePath.appending(path))
+        }
+
+        .get("/mix") { _, _ in
+            let wasmModules = try await discoverModules(
+                directory: storagePath,
+                root: storagePath
+            )
+
+            return try MixedOutput(modules: wasmModules)
         }
 }

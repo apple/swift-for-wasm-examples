@@ -1,17 +1,5 @@
-//===----------------------------------------------------------------------===//
-//
-// This source file is part of the Swift open source project
-//
-// Copyright (c) 2024 Apple Inc. and the Swift project authors
-// Licensed under Apache License v2.0 with Runtime Library Exception
-//
-// See https://swift.org/LICENSE.txt for license information
-// See https://swift.org/CONTRIBUTORS.txt for the list of Swift project authors
-//
-//===----------------------------------------------------------------------===//
-
 /// Number of samples generated per second.
-let sampleRate = 44_100
+let sampleRate = 44100
 
 /// Stateless sawtooth-shaped waveform function.
 /// - Parameters:
@@ -33,18 +21,18 @@ struct Saw: Signal {
     /// amplitude of 1.0 means that samples returned from ``Saw/next()`` will always stay in `-1.0...1.0` range.
     var amplitude: Float = 1.0
 
-    /// Number of seconds passed since the current oscillation started. To avoid overflowing, this value is reset t
-    /// 0.0 after every oscillation.
+    /// Number of seconds passed since the current oscillation started. To avoid overflowing, this value is reset
+    /// to 0.0 after every oscillation.
     var currentTime: Float = 0.0
 
     mutating func next() -> Float {
         let result = saw(time: currentTime, frequency: frequency)
 
-        self.currentTime += 1.0 / Float(sampleRate)
-        if self.currentTime > 1.0 / self.frequency {
-            self.currentTime = 0
+        currentTime += 1.0 / Float(sampleRate)
+        if currentTime > 1.0 / frequency {
+            currentTime = 0
         }
 
-        return result * self.amplitude
+        return result * amplitude
     }
 }

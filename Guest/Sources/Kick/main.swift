@@ -10,9 +10,20 @@
 //
 //===----------------------------------------------------------------------===//
 
-/// An abstract digital signal that produces an infinite amount of samples.
-protocol Signal {
-    /// Updates current state of the signal and produces the next sample.
-    /// - Returns: The latest sample in this signal.
-    mutating func next() -> Float
+@_expose(wasm, "main")
+func main(contextIndex: Int) {
+    var sequencedKick = Sequencer(
+        instrument: Kick(),
+        sequence: [.noteOff, .noteOn(.c.octave(1)), .noteOff, .noteOn(.c.octave(1))],
+        stepLengthInSeconds: 0.25
+    )
+
+    let totalLengthInSeconds = 6
+
+    let buffer = AudioBuffer(
+        capacity: sampleRate * totalLengthInSeconds,
+        source: &sequencedKick
+    )
+
+    Audio.encode(contextIndex: contextIndex, buffer)
 }

@@ -23,22 +23,28 @@ See https://swift.org/CONTRIBUTORS.txt for the list of Swift project authors -->
     }
     </style>
   </body>
-  <h1 id="wasm-logger">Upload an Audio Plugin</h1>
+  <h1 id="wasm-logger">Audio Plugins Upload</h1>
   <form>
-    <input type="file" accept="application/wasm">
+    <input type="file" accept="application/wasm" multiple>
     <input type="button" value="Upload">
   </form>
 
   <script>
       const button = document.querySelector("input[type=button]");
-      const inputElement = document.querySelector("input[type=file]")
+      const inputElement = document.querySelector("input[type=file]");
 
       button.addEventListener("click", (event) => {
-          const file = inputElement.files[0]
-          fetch(`/wasm-module/${file.name}`, {
-              method: 'POST',
-              body: file
-          })
+          const promises = [];
+          for (let i = 0; i < inputElement.files.length; ++i) {
+              const file = inputElement.files[i];
+              promises.push(fetch(`/wasm-module/${file.name}`, {
+                  method: 'POST',
+                  body: file
+              }));
+          }
+          Promise.all(promises).then(() => {
+              document.getElementById('wasm-logger').innerHTML = "Upload successful";
+          });
       });
   </script>
 </html>

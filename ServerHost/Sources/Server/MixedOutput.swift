@@ -25,7 +25,7 @@ struct MixedOutput: ResponseGenerator {
                         // Read audio buffer from Wasm linear memory.
                         caller.runtime.store.memory(
                             at: 0
-                        ).data[Int(start)..<Int(byteCount)].withUnsafeBytes {
+                        ).data[Int(start)..<Int(start + byteCount)].withUnsafeBytes {
                             // Rebind memory bytes to `Float32`.
                             $0.withMemoryRebound(to: Float32.self) {
                                 // Enumerate each floating point sample
@@ -39,6 +39,8 @@ struct MixedOutput: ResponseGenerator {
                                     // Mix current sample with an existing value.
                                     samples[i] += sample
                                 }
+
+                                assert(samples.count == $0.count)
                             }
                         }
 

@@ -14,7 +14,8 @@ private func serveHTML(_ string: String) -> Response {
 struct IndexPage: ResponseGenerator, Sendable {
     struct Module: Sendable {
         let name: String
-        let path: FilePath
+        let absolutePath: FilePath
+        let relativePath: FilePath
     }
 
     var modules: [Module] = []
@@ -30,7 +31,7 @@ struct IndexPage: ResponseGenerator, Sendable {
                 <h1 id="wasm-logger">\(module.name)</h1>
                 <div
                   class="plugin"
-                  data-module-path="\(module.path)"
+                  data-module-path="\(module.relativePath)"
                   style="display: flex; flex-direction: column; align-items: flex-start; gap: 1rem;"
                 >
                   <canvas class="plotter" width="1000" height="210"></canvas>
@@ -79,11 +80,13 @@ func discoverModules(directory: FilePath, root: FilePath) async throws -> [Index
         let dirContents = $0.listContents()
 
         for try await module in dirContents where module.type == .regular && module.path.isSynthModule {
-            var path = module.path
-            _ = path.removePrefix(root)
+            let absolutePath = module.path
+            var relativePath = module.path
+            _ = relativePath.removePrefix(root)
             modules.append(.init(
                 name: module.path.lastComponent?.stem ?? "Module",
-                path: path
+                absolutePath: absolutePath,
+                relativePath: relativePath
             ))
         }
 
@@ -93,9 +96,6 @@ func discoverModules(directory: FilePath, root: FilePath) async throws -> [Index
 
 extension FilePath {
     var isSynthModule: Bool {
-        print(self.string)
-        let result = self.extension == "wasm" && self.stem != "Plotter"
-        print(result)
-        return result
+        self.extension == "wasm" && self.stem != "Plotter"
     }
 }

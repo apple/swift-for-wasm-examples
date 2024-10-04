@@ -3,7 +3,9 @@ import WasmKit
 
 struct MixedOutput: ResponseGenerator {
     init(modules: [IndexPage.Module]) throws {
-        self.modules = try modules.map { try parseWasm(filePath: $0.path) }
+        self.modules = try modules.map {
+            try parseWasm(filePath: $0.absolutePath)
+        }
     }
     
     var modules: [Module]
@@ -24,21 +26,22 @@ struct MixedOutput: ResponseGenerator {
                         caller.runtime.store.memory(
                             at: 0
                         ).data[Int(start)..<Int(byteCount)].withUnsafeBytes {
-                            // Bitcast memory bytes to `Float32`.
+                            // Rebind memory bytes to `Float32`.
                             $0.withMemoryRebound(to: Float32.self) {
                                 // Enumerate each floating point sample
                                 for (i, sample) in $0.enumerated() {
                                     // Extend `samples` buffer if needed.
                                     if samples.count < $0.count {
-                                        // 0 (no signal) is the default sample.
-                                        samples.append(0)
+                                        // 0.0 (no signal) is the default sample.
+                                        samples.append(0.0)
                                     }
 
-                                    // Mix sample with an existing value.
+                                    // Mix current sample with an existing value.
                                     samples[i] += sample
                                 }
                             }
                         }
+
                         return []
                     }
                 ]
@@ -50,7 +53,7 @@ struct MixedOutput: ResponseGenerator {
             let moduleInstance = try runtime.instantiate(module: module)
 
             // Call entrypoint module function
-            _ = try runtime.invoke(moduleInstance, function: "main")
+            _ = try runtime.invoke(moduleInstance, function: "main", with: [.i32(0)])
         }
 
         var body = ByteBuffer()

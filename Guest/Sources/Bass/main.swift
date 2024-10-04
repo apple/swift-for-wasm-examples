@@ -11,6 +11,7 @@
 //===----------------------------------------------------------------------===//
 
 @_expose(wasm, "main")
+@_cdecl("main")
 func main(contextIndex: Int) {
     var sequencedBass = Sequencer(
         instrument: Bass(),

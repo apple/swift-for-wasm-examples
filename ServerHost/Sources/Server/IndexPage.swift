@@ -26,9 +26,10 @@ struct IndexPage: ResponseGenerator, Sendable {
             <h1 id="wasm-logger"><a href="/public/upload.html">Upload Wasm plugins</a> to get started</h1>
             """
         } else {
-            self.modules.sorted(using: KeyPathComparator(\.name, order: .forward)).map { module in
+            """
+            \(self.modules.sorted(using: KeyPathComparator(\.name, order: .forward)).map { module in
                 """
-                <h1 id="wasm-logger">\(module.name)</h1>
+                <h1 class="track-name">\(module.name)</h1>
                 <div
                   class="plugin"
                   data-module-path="\(module.relativePath)"
@@ -38,7 +39,17 @@ struct IndexPage: ResponseGenerator, Sendable {
                   <audio class="audio" type="audio.wav" controls></audio>
                 </div>
                 """
-            }.joined(separator: "\n")
+            }.joined(separator: "\n"))
+            
+            <h1 class="track-name">Mix</h1>
+            <div
+              class="mix"
+              style="display: flex; flex-direction: column; align-items: flex-start; gap: 1rem;"
+            >
+              <canvas class="plotter" width="1000" height="210"></canvas>
+              <audio class="audio" type="audio.wav" controls></audio>
+            </div>
+            """
         }
     }
 
@@ -56,11 +67,11 @@ struct IndexPage: ResponseGenerator, Sendable {
                   background-color: black;
                   padding: 1rem;
                 }
-                #wasm-logger {
+                #wasm-logger, .track-name {
                   font-family: sans-serif;
                   color: white;
                 }
-                #wasm-logger a {
+                #wasm-logger a, .track-name a {
                   color: #aabbcc;g
                 }
                 </style>

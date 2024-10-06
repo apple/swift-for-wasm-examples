@@ -12,6 +12,7 @@ struct MixedOutput: ResponseGenerator {
 
     func response(from request: Request, context: some RequestContext) throws -> Response {
         var samples = [Float32]()
+        var memoryIndex = 0
 
         let runtime = Runtime(
             hostModules: ["audio": .init(
@@ -24,7 +25,7 @@ struct MixedOutput: ResponseGenerator {
 
                         // Read audio buffer from Wasm linear memory.
                         caller.runtime.store.memory(
-                            at: 0
+                            at: memoryIndex
                         ).data[Int(start)..<Int(start + byteCount)].withUnsafeBytes {
                             // Rebind memory bytes to `Float32`.
                             $0.withMemoryRebound(to: Float32.self) {
@@ -56,6 +57,7 @@ struct MixedOutput: ResponseGenerator {
 
             // Call entrypoint module function
             _ = try runtime.invoke(moduleInstance, function: "main", with: [.i32(0)])
+            memoryIndex += 1
         }
 
         var body = ByteBuffer()

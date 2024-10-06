@@ -43,7 +43,7 @@ struct IndexPage: ResponseGenerator, Sendable {
             
             <h1 class="track-name">Mix</h1>
             <div
-              class="mix"
+              id="tracks-mix"
               style="display: flex; flex-direction: column; align-items: flex-start; gap: 1rem;"
             >
               <canvas class="plotter" width="1000" height="210"></canvas>

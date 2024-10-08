@@ -11,7 +11,8 @@
 //===----------------------------------------------------------------------===//
 
 @_expose(wasm, "main")
-func main() {
+@_cdecl("main")
+func main(contextIndex: Int) {
     let sequencedKick = Sequencer(
         instrument: Kick(),
         sequence: [.noteOff, .noteOn(.c.octave(1)), .noteOff, .noteOn(.c.octave(1))],
@@ -38,6 +39,8 @@ func main() {
         stepLengthInSeconds: 0.25
     )
 
+    let totalLengthInSeconds = 6
+
     var mixer = Mixer(
         source1: sequencedHiHat,
         volume1: 0.05,
@@ -47,14 +50,10 @@ func main() {
         volume3: 0.1
     )
 
-    let totalLengthInSeconds = 6
     let buffer = AudioBuffer(
         capacity: sampleRate * totalLengthInSeconds,
         source: &mixer
     )
-    Audio.encode(buffer)
 
-    Plotter<HTMLCanvas>(
-        width: 1000, height: 200, margin: 10
-    ).plot(buffer)
+    Audio.encode(contextIndex: contextIndex, buffer)
 }

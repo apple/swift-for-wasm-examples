@@ -1,0 +1,50 @@
+<!-- This source file is part of the Swift open source project
+
+Copyright (c) 2024 Apple Inc. and the Swift project authors
+Licensed under Apache License v2.0 with Runtime Library Exception
+
+See https://swift.org/LICENSE.txt for license information
+See https://swift.org/CONTRIBUTORS.txt for the list of Swift project authors -->
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Swift Audio Workstation</title>
+  </head>
+  <body>
+    <style>
+    body {
+      background-color: black;
+      padding: 1rem;
+    }
+    #wasm-logger {
+      font-family: sans-serif;
+      color: white;
+    }
+    </style>
+  </body>
+  <h1 id="wasm-logger">Audio Plugins Upload</h1>
+  <form>
+    <input type="file" accept="application/wasm" multiple>
+    <input type="button" value="Upload">
+  </form>
+
+  <script>
+      const button = document.querySelector("input[type=button]");
+      const inputElement = document.querySelector("input[type=file]");
+
+      button.addEventListener("click", (event) => {
+          const promises = [];
+          for (let i = 0; i < inputElement.files.length; ++i) {
+              const file = inputElement.files[i];
+              promises.push(fetch(`/wasm-module/${file.name}`, {
+                  method: 'POST',
+                  body: file
+              }));
+          }
+          Promise.all(promises).then(() => {
+              document.getElementById('wasm-logger').innerHTML = "Upload successful";
+          });
+      });
+  </script>
+</html>

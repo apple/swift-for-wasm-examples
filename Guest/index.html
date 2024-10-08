@@ -10,8 +10,6 @@ See https://swift.org/CONTRIBUTORS.txt for the list of Swift project authors -->
   <head>
     <meta charset="utf-8">
     <title>Swift Audio Workstation</title>
-  </head>
-  <body>
     <script type="module" src="Sources/JavaScript/index.js">
     </script>
     <style>
@@ -24,10 +22,16 @@ See https://swift.org/CONTRIBUTORS.txt for the list of Swift project authors -->
       color: white;
     }
     </style>
+  </head>
+  <body>
+    <h1 id="wasm-logger">Swift Audio Workstation</h1>
+    <div
+      class="plugin"
+      data-module-path=".build/wasm32-unknown-none-wasm/release/swift-audio.wasm"
+      style="display: flex; flex-direction: column; align-items: flex-start; gap: 1rem;"
+    >
+    <canvas class="plotter" width="1000" height="210"></canvas>
+    <audio class="audio" type="audio.wav" controls></audio>
+    </div>
   </body>
-  <h1 id="wasm-logger">Swift Audio Workstation</h1>
-  <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 1rem;">
-  <canvas id="tutorial" width="1000" height="210"></canvas>
-  <audio id="audio" type="audio.wav" controls></audio>
-  </div>
 </html>

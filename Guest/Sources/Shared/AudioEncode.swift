@@ -12,12 +12,13 @@
 
 @_extern(wasm, module: "audio", name: "encode")
 @_extern(c)
-private func encodeAudio(address: Int, byteCount: Int)
+private func encodeAudio(ctx: Int, address: Int, byteCount: Int)
 
 enum Audio {
-    static func encode(_ buffer: borrowing AudioBuffer) {
+    static func encode(contextIndex: Int, _ buffer: borrowing AudioBuffer) {
         buffer.storage.withContiguousStorageIfAvailable {
             encodeAudio(
+                ctx: contextIndex,
                 address: Int(bitPattern: $0.baseAddress!),
                 byteCount: MemoryLayout<Float>.stride * $0.count
             )

@@ -14,26 +14,26 @@
 /// implementation is required to provide these functions for drawing code in
 /// this module to work.
 protocol Canvas {
-    static func beginPath()
-    static func stroke()
-    static func moveTo(x: Int, y: Int)
-    static func lineTo(x: Int, y: Int)
+    static func beginPath(ctx: Int)
+    static func stroke(ctx: Int)
+    static func moveTo(ctx: Int, x: Int, y: Int)
+    static func lineTo(ctx: Int, x: Int, y: Int)
 }
 
 struct HTMLCanvas: Canvas {
     @_extern(wasm, module: "canvas", name: "beginPath")
     @_extern(c)
-    static func beginPath()
+    static func beginPath(ctx: Int)
 
     @_extern(wasm, module: "canvas", name: "stroke")
     @_extern(c)
-    static func stroke()
+    static func stroke(ctx: Int)
 
     @_extern(wasm, module: "canvas", name: "moveTo")
     @_extern(c)
-    static func moveTo(x: Int, y: Int)
+    static func moveTo(ctx: Int, x: Int, y: Int)
 
     @_extern(wasm, module: "canvas", name: "lineTo")
     @_extern(c)
-    static func lineTo(x: Int, y: Int)
+    static func lineTo(ctx: Int, x: Int, y: Int)
 }

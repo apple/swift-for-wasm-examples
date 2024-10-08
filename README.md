@@ -9,6 +9,8 @@ With foundational building blocks written in Swift, it utilizes C++ interop for 
 written with a multi-platform approach, which makes it easy to integrate into Wasm-based serverless environment or
 native applications and libraries.
 
+The repository is split into three packages: `Guest` with Wasm modules built with Embedded Swift, `ServerHost` that embeds these modules, and `WATExample` that demonstrates compilation of WebAssembly Text Format to binary Wasm modules using Swift.
+
 ## Requirements
 
 WebAssembly support in Swift is available for preview in latest Trunk Development (main) snapshots at

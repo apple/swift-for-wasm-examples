@@ -3,7 +3,8 @@
     (func $print (param (; pointer ;) i32 (; length ;) i32)))
   (export "main" (func $main))
 
-  (memory 1)
+  (memory $memory 1)
+  (export "memory" (memory $memory))
 
   ;; n! = n * (n - 1) * (n - 2) * ... * 2 * 1
   (func $factorial (param $arg i64) (result i64)

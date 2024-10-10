@@ -71,7 +71,7 @@ struct MixedOutput: ResponseGenerator {
             // Call entrypoint module function
 
             let main = instance.exports[function: "main"]!
-            _ = try main([.i32(0)])
+            try main([.i32(0)])
         }
 
         var body = ByteBuffer()

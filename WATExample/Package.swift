@@ -7,7 +7,7 @@ let package = Package(
     name: "WasmHost",
     platforms: [.macOS(.v14)],
     dependencies: [
-        .package(url: "https://github.com/swiftwasm/WasmKit.git", from: "0.0.8"),
+        .package(url: "https://github.com/swiftwasm/WasmKit.git", from: "0.1.0"),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.

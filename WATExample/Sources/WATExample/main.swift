@@ -15,37 +15,35 @@ let binaryModule = try wat2wasm(String(decoding: Data(contentsOf: watURL), as: U
 // Parse as WasmKit IR.
 let parsedModule = try parseWasm(bytes: binaryModule)
 
+let engine = Engine()
+let store = Store(engine: engine)
+
 // Initialize WasmKit runtime
-let runtime = Runtime(
-    hostModules: [
-        "host": .init(
-            functions: [
-                // Pass host printer function as a closure
-                "print": HostFunction(type: .init(parameters: [.i32, .i32])) { instance, args in
-                    guard let start = args.first?.i32,
-                          let offset = args.last?.i32
-                    else { return [] }
+let imports: Imports = [
+    "host": [
+        // Pass host printer function as a closure
+        "print": ExternalValue.function(Function(store: store, type: .init(parameters: [.i32, .i32])) { caller, args in
+                guard let start = args.first?.i32,
+                      let offset = args.last?.i32
+                else { return [] }
 
-                    // Decode linear memory
-                    let string = String(
-                        decoding: instance.store
-                            .memory(at: 0)
-                            .data[Int(start) ..< Int(start + offset)],
-                        as: UTF8.self
-                    )
+                // Decode linear memory
+                let string = String(
+                    decoding: caller.instance!.exports[memory: "memory"]!.data[Int(start) ..< Int(start + offset)],
+                    as: UTF8.self
+                )
 
-                    // Print the result
-                    print("Guest module printed: \(string)")
-                    return []
-                },
-            ]
+                // Print the result
+                print("Guest module printed: \(string)")
+                return []
+            }
         ),
     ]
-)
+]
 
 // Instantiate the module
-let moduleInstance = try runtime.instantiate(module: parsedModule)
+let moduleInstance = try parsedModule.instantiate(store: store, imports: imports)
 
 // Call `main` function
-let result = try runtime.invoke(moduleInstance, function: "main")
+let result = try moduleInstance.exports[function: "main"]!()
 print("Returned value: \(result)")

@@ -23,7 +23,7 @@ let embeddedSwiftSettings: [SwiftSetting] = [
 ]
 
 let embeddedCSettings: [CSetting] = [
-    .unsafeFlags(["-fdeclspec"]),
+    .unsafeFlags(["-fdeclspec", "-mreference-types"]),
 ]
 
 let linkerSettings: [LinkerSetting] = [
@@ -60,6 +60,17 @@ let package = Package(
         .target(
             name: "dlmalloc",
             cSettings: libcSettings
+        ),
+        .target(
+            name: "externref",
+            cSettings: embeddedCSettings
+        ),
+        .executableTarget(
+            name: "RefsTest",
+            dependencies: ["externref"],
+            cSettings: embeddedCSettings,
+            swiftSettings: embeddedSwiftSettings,
+            linkerSettings: linkerSettings
         ),
     ]
 )

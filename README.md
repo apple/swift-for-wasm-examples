@@ -54,19 +54,21 @@ cd /root/build
 ## How to Build and Run
 
 Assuming you're within the cloned repository and have the latest development snapshots selected per the instructions
-above, first build the package:
+above, build modules from the `Guest` package (this will copy `.wasm` modules to the home directory of the current user):
 
 ```sh
-swift build --triple wasm32-unknown-none-wasm -c release --product swift-audio
+cd Guest; ./build.sh
 ```
 
-Then start the HTTP server:
+
+Then build and start the HTTP server:
 
 ```sh
-python3 -m http.server
+cd ../ServerHost; swift run Server
 ```
 
-Open http://localhost:8000 in your browser to see the project running.
+Open http://localhost:8080 in your browser to see the project running. Use the web interface to upload previously built
+`Guest` modules from the home directory.
 
 ## License
 

@@ -1,7 +1,6 @@
 import externref
 
-@expose(wasm, "refsTest")
-func refsTest() -> Int {
-    task_builtin_wasm_table_size()
+@_expose(wasm, "refsTest")
+func refsTest() -> Int32 {
+    test_builtin_wasm_table_size()
 }
-

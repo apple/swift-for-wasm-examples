@@ -19,7 +19,7 @@ let embeddedSwiftSettings: [SwiftSetting] = [
     .enableExperimentalFeature("Embedded"),
     .enableExperimentalFeature("Extern"),
     .interoperabilityMode(.Cxx),
-    .unsafeFlags(["-wmo", "-disable-cmo", "-Xfrontend", "-gnone", "-disable-stack-protector"]),
+    .unsafeFlags(["-wmo", "-disable-cmo", "-Xfrontend", "-gnone", "-Xfrontend", "-disable-stack-protector"]),
 ]
 
 let embeddedCSettings: [CSetting] = [

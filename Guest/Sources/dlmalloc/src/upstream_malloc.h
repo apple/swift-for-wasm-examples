@@ -3131,8 +3131,7 @@ static int init_mparams(void) {
     }
 #endif /* WIN32 */
 
-    /* Sanity-check configuration:
-       size_t must be unsigned and as wide as pointer type.
+    /* size_t must be unsigned and as wide as pointer type.
        ints must be at least 4 bytes.
        alignment must be at least 8.
        Alignment, min chunk size, and page size must all be powers of 2.

@@ -12,7 +12,7 @@
 // WebAssembly doesn't support shrinking linear memory.
 #define MORECORE_CANNOT_TRIM 1
 
-// Disable sanity checks to reduce code size.
+// Disable checks to reduce code size.
 #define ABORT __builtin_unreachable()
 
 // If threads are enabled, enable support for threads.

@@ -21,6 +21,6 @@ swift build --triple wasm32-unknown-none-wasm -c release --product Plotter
 for n in Bass HiHat Kick Mix; do
   swift build --triple wasm32-unknown-none-wasm -c release --product $n
 
-  cp "${bin_path}/${n}.wasm" $HOME
+  cp "${bin_path}/${n}.wasm" "$HOME"
 done
 
